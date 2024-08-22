@@ -1,3 +1,4 @@
+"use client";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import {
   Container,
@@ -11,24 +12,29 @@ import {
 import Head from "next/head";
 import getStripe from "@/utils/get-stripe";
 
-const handleSubmit = async () => {
-  const checkoutSession = await fetch("/api/checkout_sessions", {
-    method: "POST",
-    headers: { origin: "http://localhost:3000" },
-  });
-  const checkoutSessionJson = await checkoutSession.json();
-
-  const stripe = await getStripe();
-  const { error } = await stripe.redirectToCheckout({
-    sessionId: checkoutSessionJson.id,
-  });
-
-  if (error) {
-    console.warn(error.message);
-  }
-};
-
 export default function Home() {
+  const handleSubmit = async () => {
+    const checkoutSession = await fetch("/api/checkout_sessions", {
+      method: "POST",
+      headers: { origin: "http://localhost:3000" },
+    });
+    const checkoutSessionJson = await checkoutSession.json();
+
+    if (checkoutSession.statusCode === 500) {
+      console.error(checkoutSession.message);
+      return;
+    }
+
+    const stripe = await getStripe();
+    const { error } = await stripe.redirectToCheckout({
+      sessionId: checkoutSessionJson.id,
+    });
+
+    if (error) {
+      console.warn(error.message);
+    }
+  };
+
   return (
     <Container maxWidth="100vw">
       <Head>
@@ -43,8 +49,14 @@ export default function Home() {
             Flashcard SaaS
           </Typography>
           <SignedOut>
-            <Button color="inherit"> Login</Button>
-            <Button color="inherit"> Sign Up</Button>
+            <Button color="inherit" href="/sign-in">
+              {" "}
+              Login
+            </Button>
+            <Button color="inherit" href="/sign-up">
+              {" "}
+              Sign Up
+            </Button>
           </SignedOut>
           <SignedIn>
             <UserButton />
@@ -148,7 +160,12 @@ export default function Home() {
                 {" "}
                 Unlimited flashcards and storage, with priority support.{" "}
               </Typography>
-              <Button variant="contained" color="primary">
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2 }}
+                onClick={handleSubmit}
+              >
                 Choose pro
               </Button>
             </Box>
