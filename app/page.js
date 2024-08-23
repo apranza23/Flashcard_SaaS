@@ -13,10 +13,11 @@ import Head from "next/head";
 import getStripe from "@/utils/get-stripe";
 
 export default function Home() {
-  const handleSubmit = async () => {
+  const handleSubmit = async (planType) => {
     const checkoutSession = await fetch("/api/checkout_sessions", {
       method: "POST",
       headers: { origin: "http://localhost:3000" },
+      body: JSON.stringify({ planType }),
     });
     const checkoutSessionJson = await checkoutSession.json();
 
@@ -38,15 +39,15 @@ export default function Home() {
   return (
     <Container maxWidth="100vw">
       <Head>
-        <title> FlashCard Saas</title>
-        <meta name="description" content="Create flashcard from your text" />
+        <title> FlashMind AI</title>
+        <meta name="description" content="Create flashcards from your text" />
       </Head>
 
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" style={{ flexGrow: 1 }}>
             {" "}
-            Flashcard SaaS
+            FlashMind AI
           </Typography>
           <SignedOut>
             <Button color="inherit" href="/sign-in">
@@ -65,10 +66,10 @@ export default function Home() {
       </AppBar>
       <Box sx={{ textAlign: "center", my: 4 }}>
         <Typography variant="h2" component="h1" gutterBottom>
-          Welcome to Flashcard SaaS
+          Welcome to FlashMind AI
         </Typography>
         <Typography variant="h5" component="h2" gutterBottom>
-          The easiest way to create flashcards from your text.
+          Create AI-generated flashcards with ease!
         </Typography>
         <Button
           variant="contained"
@@ -88,11 +89,10 @@ export default function Home() {
         </Typography>
         <Grid container spacing={4}>
           <Grid item xs={12} md={4}>
-            <Typography variant="h6"> Easy Text Input</Typography>
+            <Typography variant="h6"> Visualize your progress</Typography>
             <Typography>
               {" "}
-              Simply input your text and let our software do the rest. Creating
-              flashcards has never been easier.{" "}
+              Track your progress for all flashcard sets with daily monitor.
             </Typography>
           </Grid>
           <Grid item xs={12} md={4}>
@@ -104,11 +104,11 @@ export default function Home() {
             </Typography>
           </Grid>
           <Grid item xs={12} md={4}>
-            <Typography variant="h6"> Accessible Anywhere</Typography>
+            <Typography variant="h6"> Space Repetition </Typography>
             <Typography>
               {" "}
-              Access your flashcards from any device, at any time. Study on the
-              go with ease.{" "}
+              Using the latest learning science, these flashcards utilize spaced
+              repetition for optimal learning.
             </Typography>
           </Grid>
         </Grid>
@@ -137,7 +137,11 @@ export default function Home() {
                 {" "}
                 Access to basic flashcard features and limited storage.{" "}
               </Typography>
-              <Button variant="contained" color="primary">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleSubmit("basic")}
+              >
                 Choose basic
               </Button>
             </Box>
@@ -158,13 +162,14 @@ export default function Home() {
               </Typography>
               <Typography>
                 {" "}
-                Unlimited flashcards and storage, with priority support.{" "}
+                Unlimited flashcards and storage, and access to more
+                graphs/charts (i.e. Heatmap).{" "}
               </Typography>
               <Button
                 variant="contained"
                 color="primary"
                 sx={{ mt: 2 }}
-                onClick={handleSubmit}
+                onClick={() => handleSubmit("pro")}
               >
                 Choose pro
               </Button>

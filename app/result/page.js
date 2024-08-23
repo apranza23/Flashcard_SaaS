@@ -1,17 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getStripe } from "@/utils/get-stripe";
 import { useSearchParams } from "next/navigation";
-import {
-  Container,
-  TextField,
-  Button,
-  Paper,
-  Typography,
-  Box,
-  CircularProgress,
-} from "@mui/material";
+import { Container, Typography, Box, CircularProgress } from "@mui/material";
 const ResultPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
